@@ -1,16 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ✅ Single-file mobile-first treasure hunt website
-// - Home page with description + Start button
-// - Clue pages: clue text, answer input, Check Answer button
-// - Wrong answer: show a helpful message
-// - Correct answer: go to next clue automatically
-// - Final page: simple celebration + restart option
-// - Optimized for phones: big tap targets, legible text, sticky CTA, fast
-// - Progress is saved in localStorage so players can resume
-
-const CLUES  = [
+const CLUES = [
   {
     text: "I speak without a mouth and hear without ears. I have nobody, but I come alive with wind. What am I?",
     answer: "echo",
@@ -25,6 +16,7 @@ const CLUES  = [
     text: "What has to be broken before you can use it?",
     answer: "egg",
     hint: "Breakfast staple",
+    image: "/gerb.jpg", // 👈 put egg.jpg inside the public/ folder
   },
 ];
 
@@ -36,20 +28,23 @@ const STORAGE_KEY = "treasure_hunt_progress_v1";
 
 export default function TreasureHuntApp() {
   const [started, setStarted] = useState(false);
-  const [index, setIndex] = useState(0); // which clue
-const [value, setValue] = useState("");
-const [feedback, setFeedback] = useState(null);
-const [shake, setShake] = useState(false);
-const inputRef = useRef(null);
+  const [index, setIndex] = useState(0);
+  const [value, setValue] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const [shake, setShake] = useState(false);
+  const [zoomImage, setZoomImage] = useState(null);
+  const inputRef = useRef(null);
 
-
-  // Load progress
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed.index === "number" && typeof parsed.started === "boolean") {
+        if (
+          parsed &&
+          typeof parsed.index === "number" &&
+          typeof parsed.started === "boolean"
+        ) {
           setStarted(parsed.started);
           setIndex(Math.min(parsed.index, CLUES.length - 1));
         }
@@ -57,15 +52,10 @@ const inputRef = useRef(null);
     }
   }, []);
 
-  // Save progress
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ started, index })
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ started, index }));
   }, [started, index]);
 
-  // Reset UI for each clue
   useEffect(() => {
     setValue("");
     setFeedback(null);
@@ -76,26 +66,24 @@ const inputRef = useRef(null);
   }, [index, started]);
 
   const isLast = index >= CLUES.length - 1;
-  const progressPct = useMemo(() => ((index) / CLUES.length) * 100, [index]);
+  const progressPct = useMemo(() => (index / CLUES.length) * 100, [index]);
 
   function checkAnswer() {
     const expected = normalize(CLUES[index].answer);
     const got = normalize(value);
     if (!got) {
       setFeedback("Type an answer first ✍️");
-      setShake(true); setTimeout(() => setShake(false), 350);
+      setShake(true);
+      setTimeout(() => setShake(false), 350);
       return;
     }
     if (got === expected) {
       setFeedback(null);
-      if (isLast) {
-        setIndex(index + 1); // move past last to trigger finish screen
-      } else {
-        setIndex(index + 1);
-      }
+      setIndex(index + 1);
     } else {
       setFeedback("Not quite. Try again! ✨");
-      setShake(true); setTimeout(() => setShake(false), 350);
+      setShake(true);
+      setTimeout(() => setShake(false), 350);
     }
   }
 
@@ -107,7 +95,6 @@ const inputRef = useRef(null);
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  // Simple page variants for transitions
   const pageVariants = {
     initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0 },
@@ -116,7 +103,7 @@ const inputRef = useRef(null);
 
   return (
     <div className="min-h-dvh bg-gradient-to-b from-white to-slate-50 text-slate-900 flex flex-col">
-      {/* App Bar */}
+      {/* Header */}
       <div className="sticky top-0 z-10 bg-white/70 backdrop-blur border-b border-slate-200">
         <div className="mx-auto max-w-screen-sm px-4 py-3 flex items-center justify-between">
           <div className="font-semibold tracking-tight">Treasure Hunt</div>
@@ -128,34 +115,37 @@ const inputRef = useRef(null);
             Restart
           </button>
         </div>
-        {/* Progress bar */}
         <div className="h-1 bg-slate-200">
           <div
             className="h-1 bg-sky-500 transition-all duration-300"
-            style={{ width: `${started ? Math.min(100, Math.max(2, progressPct)) : 0}%` }}
+            style={{
+              width: `${started ? Math.min(100, Math.max(2, progressPct)) : 0}%`,
+            }}
           />
         </div>
       </div>
 
+      {/* Main content */}
       <main className="mx-auto w-full max-w-screen-sm flex-1 px-4 pb-28 pt-6">
         <AnimatePresence mode="wait">
           {!started ? (
+            // Home Page
             <motion.section
               key="home"
               variants={pageVariants}
-              initial="initial" animate="animate" exit="exit"
+              initial="initial"
+              animate="animate"
+              exit="exit"
               className="text-center"
             >
-              <h1 className="text-2xl font-bold leading-tight">Ready for a Treasure Hunt?</h1>
+              <h1 className="text-2xl font-bold leading-tight">
+                Ready for a Treasure Hunt?
+              </h1>
               <p className="mt-3 text-slate-600">
-                Solve each clue to advance. Enter the correct answer and tap <span className="font-medium">Check</span>.
-                Perfect for playing on your phone.
+                Solve each clue to advance. Enter the correct answer and tap{" "}
+                <span className="font-medium">Check</span>. Perfect for playing
+                on your phone.
               </p>
-              <ul className="mt-4 inline-flex items-center gap-2 text-sm text-slate-500">
-                <li>🔐 Progress auto-saves</li>
-                <li>📱 Mobile-optimized</li>
-                <li>✨ Smooth transitions</li>
-              </ul>
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setStarted(true)}
@@ -165,22 +155,46 @@ const inputRef = useRef(null);
               </motion.button>
             </motion.section>
           ) : index <= CLUES.length - 1 ? (
+            // Clue Page
             <motion.section
               key={`clue-${index}`}
               variants={pageVariants}
-              initial="initial" animate="animate" exit="exit"
+              initial="initial"
+              animate="animate"
+              exit="exit"
             >
-              <div className="text-xs uppercase tracking-wide text-slate-500">Clue {index + 1} of {CLUES.length}</div>
-              <h2 className="mt-2 text-xl font-semibold leading-snug">{CLUES[index].text}</h2>
+              <div className="text-xs uppercase tracking-wide text-slate-500">
+                Clue {index + 1} of {CLUES.length}
+              </div>
+
+              {/* Optional image */}
+              {CLUES[index].image && (
+                <div className="mt-4">
+                  <img
+                    src={CLUES[index].image}
+                    alt="Clue illustration"
+                    className="rounded-lg shadow-md cursor-zoom-in max-h-48 mx-auto"
+                    onClick={() => setZoomImage(CLUES[index].image)}
+                  />
+                </div>
+              )}
+
+              <h2 className="mt-4 text-xl font-semibold leading-snug">
+                {CLUES[index].text}
+              </h2>
 
               {CLUES[index].hint && (
                 <details className="mt-3 text-sm text-slate-600">
-                  <summary className="cursor-pointer select-none inline-flex items-center gap-1">Need a hint?</summary>
+                  <summary className="cursor-pointer select-none inline-flex items-center gap-1">
+                    Need a hint?
+                  </summary>
                   <div className="mt-1">💡 {CLUES[index].hint}</div>
                 </details>
               )}
 
-              <label htmlFor="answer" className="sr-only">Your answer</label>
+              <label htmlFor="answer" className="sr-only">
+                Your answer
+              </label>
               <input
                 id="answer"
                 ref={inputRef}
@@ -190,7 +204,12 @@ const inputRef = useRef(null);
                 spellCheck={false}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); checkAnswer(); } }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    checkAnswer();
+                  }
+                }}
                 placeholder="Type your answer here…"
                 className={`mt-6 w-full rounded-2xl border px-4 py-4 text-base outline-none shadow-sm focus:ring-2 focus:ring-sky-400 border-slate-300 bg-white ${
                   shake ? "animate-[shake_0.35s_ease-in-out]" : ""
@@ -199,27 +218,24 @@ const inputRef = useRef(null);
                 aria-describedby={feedback ? "feedback" : undefined}
               />
 
-              <p id="feedback" className="min-h-6 mt-2 text-sm text-rose-600">{feedback}</p>
-
-              <div className="mt-6 flex items-center justify-between text-sm text-slate-500">
-                <span>Tip: Press Enter to check</span>
-                <button
-                  className="underline"
-                  onClick={() => setValue("")}
-                >
-                  Clear
-                </button>
-              </div>
+              <p id="feedback" className="min-h-6 mt-2 text-sm text-rose-600">
+                {feedback}
+              </p>
             </motion.section>
           ) : (
+            // Finish Page
             <motion.section
               key="finish"
               variants={pageVariants}
-              initial="initial" animate="animate" exit="exit"
+              initial="initial"
+              animate="animate"
+              exit="exit"
               className="text-center"
             >
               <h2 className="text-2xl font-bold">You found the treasure! 🎉</h2>
-              <p className="mt-2 text-slate-600">Great job solving all the clues.</p>
+              <p className="mt-2 text-slate-600">
+                Great job solving all the clues.
+              </p>
               <div className="mt-6 grid gap-3">
                 <button
                   onClick={restart}
@@ -233,7 +249,7 @@ const inputRef = useRef(null);
         </AnimatePresence>
       </main>
 
-      {/* Sticky Bottom Bar */}
+      {/* Footer button */}
       {started && index <= CLUES.length && (
         <div className="fixed inset-x-0 bottom-0 z-10 bg-white/90 backdrop-blur border-t border-slate-200">
           <div className="mx-auto max-w-screen-sm px-4 py-3">
@@ -258,7 +274,20 @@ const inputRef = useRef(null);
         </div>
       )}
 
-      {/* Tiny CSS keyframes for shake */}
+      {/* Image zoom modal */}
+      {zoomImage && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          onClick={() => setZoomImage(null)}
+        >
+          <img
+            src={zoomImage}
+            alt="Zoomed clue"
+            className="max-h-[90%] max-w-[90%] rounded-lg shadow-lg cursor-zoom-out"
+          />
+        </div>
+      )}
+
       <style>{`
         @keyframes shake {
           10%, 90% { transform: translateX(-1px); }
@@ -270,14 +299,3 @@ const inputRef = useRef(null);
     </div>
   );
 }
-
-/*
-============================
-How to customize:
-- Edit the CLUES array above. Each item has { text, answer, hint? }.
-- Answers are matched case-insensitively; whitespace is ignored.
-- This single file can be dropped into any React + Tailwind project.
-
-If you prefer a plain HTML file instead of React, ask me and I'll provide it.
-============================
-*/
