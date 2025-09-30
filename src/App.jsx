@@ -89,7 +89,7 @@ export default function TreasureHuntApp() {
       setFeedback(null);
       setIndex(index + 1);
     } else {
-      setFeedback("Not quite. Try again! ✨");
+      setFeedback("Да бе да, банан!");
       setShake(true);
       setTimeout(() => setShake(false), 350);
     }
@@ -114,14 +114,7 @@ export default function TreasureHuntApp() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/70 backdrop-blur border-b border-slate-200 w-full">
         <div className="w-full px-4 py-3 flex items-center justify-between">
-          <div className="font-semibold tracking-tight">Treasure Hunt</div>
-          <button
-            onClick={restart}
-            className="text-sm px-3 py-1 rounded-xl border border-slate-300 active:scale-[0.98]"
-            aria-label="Restart"
-          >
-            Restart
-          </button>
+          <div className="font-semibold tracking-tight">🎉Изненада🎉</div>
         </div>
         <div className="h-1 bg-slate-200 w-full">
           <div
@@ -146,20 +139,12 @@ export default function TreasureHuntApp() {
               exit="exit"
               className="w-full flex-1 flex flex-col items-center justify-center text-center px-4"
             >
-              <h1 className="text-2xl font-bold leading-tight whitespace-pre-line">
-                Ready for a Treasure Hunt?
-              </h1>
-              <p className="mt-3 text-slate-600 whitespace-pre-line">
-                Solve each clue to advance. Enter the correct answer and tap{" "}
-                <span className="font-medium">Check</span>. Perfect for playing
-                on your phone.
-              </p>
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setStarted(true)}
                 className="mt-8 w-full max-w-sm rounded-2xl bg-sky-600 text-white text-lg font-semibold py-4 shadow-md active:shadow-sm"
               >
-                Start
+                Натисни на твой риск
               </motion.button>
             </motion.section>
           ) : index <= CLUES.length - 1 ? (
@@ -172,9 +157,6 @@ export default function TreasureHuntApp() {
               exit="exit"
               className="w-full flex-1 flex flex-col items-center justify-center px-4 text-center"
             >
-              <div className="text-xs uppercase tracking-wide text-slate-500">
-                Clue {index + 1} of {CLUES.length}
-              </div>
 
               {CLUES[index].image && (
                 <div className="mt-4 w-full max-w-md">
@@ -202,7 +184,7 @@ export default function TreasureHuntApp() {
                     checkAnswer();
                   }
                 }}
-                placeholder="Type your answer here…"
+                placeholder="Напиши отговор"
                 className={`mt-6 w-full max-w-md rounded-2xl border px-4 py-4 text-base outline-none shadow-sm focus:ring-2 focus:ring-sky-400 border-slate-300 bg-white ${
                   shake ? "animate-[shake_0.35s_ease-in-out]" : ""
                 }`}
@@ -223,19 +205,11 @@ export default function TreasureHuntApp() {
               className="w-full flex-1 flex flex-col items-center justify-center text-center px-4"
             >
               <h2 className="text-2xl font-bold whitespace-pre-line">
-                You found the treasure! 🎉
+                В бърлогата на приятели добри,{"\n"}
+                скрити вдън гори,{"\n"}
+                подарък намери,{"\n"}
+                сготви и си го вземи  
               </h2>
-              <p className="mt-2 text-slate-600 whitespace-pre-line">
-                Great job solving all the clues.
-              </p>
-              <div className="mt-6 grid gap-3 w-full max-w-sm">
-                <button
-                  onClick={restart}
-                  className="w-full rounded-2xl border border-slate-300 bg-white py-4 font-medium shadow-sm active:scale-[0.99]"
-                >
-                  Play Again
-                </button>
-              </div>
             </motion.section>
           )}
         </AnimatePresence>
@@ -251,17 +225,9 @@ export default function TreasureHuntApp() {
                 onClick={checkAnswer}
                 className="w-full rounded-2xl bg-sky-600 text-white text-lg font-semibold py-4 shadow-md active:shadow-sm"
               >
-                Check Answer
+                Провери
               </motion.button>
-            ) : (
-              <motion.button
-                whileTap={{ scale: 0.98 }}
-                onClick={restart}
-                className="w-full rounded-2xl bg-sky-600 text-white text-lg font-semibold py-4 shadow-md"
-              >
-                Restart
-              </motion.button>
-            )}
+            ) : <></>}
           </div>
         </div>
       )}
