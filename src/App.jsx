@@ -4,30 +4,29 @@ import { motion, AnimatePresence } from "framer-motion";
 const CLUES = [
   {
     text: "Сметката е лесна,\nспирката (към УАСГ) чудесна,\nмесецът е ясен,\nрожденикът - опасен\nдеца песни правят,\nи с кранове играят,\nно сестрите ги не траят",
-    answer: "Финиъс и Фърб"
+    answer: "Финиъс и Фърб",
   },
   {
     text: "На голям софийски площад,\nбаща и син спокойно седят,\nа на периферията близо до ръба\nсе крие храната за деня",
     answer: "Макдоналдс",
-     // 👈 put egg.jpg inside the public/ folder
   },
   {
     text: "В градската градина на тревата,\nняколко човека гледат небесата,\nизмежду босите им крака,\nкои слети букви съзря?",
-    answer: "ШМ"    
+    answer: "ШМ",
   },
   {
     text: "В софийски древни времена,\nбез метро тракийски племена\nимали целта света да покорят,\nи град като Варна да съградят",
-    answer: "9000"
+    answer: "9000",
   },
   {
     text: "Бибиди бобиди БУМ,\nцар наш със много ум,\nкаляската запалил,\nно часът пък го забравил,\nи така споменът за този ден,\nв който закъснелият бил спасен\nдва образа спокойно пазят,\nи комунистите долни плашат",
-    answer: "лъвове"    
+    answer: "лъвове",
   },
   {
     text: "Оранжевото знаем е любимият ти цвят,\nно не вярвай на софиянец като на брат.\nЩе намериш там стар документ,\nа до него стая от картини в комплект.",
     answer: "Галерий",
-    image:import.meta.env.BASE_URL + "/images/gerb.jpg" 
-  }
+    image: import.meta.env.BASE_URL + "images/gerb.jpg",
+  },
 ];
 
 function normalize(s) {
@@ -115,7 +114,7 @@ export default function TreasureHuntApp() {
     <div className="min-h-dvh bg-gradient-to-b from-white to-slate-50 text-slate-900 flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/70 backdrop-blur border-b border-slate-200">
-        <div className="mx-auto max-w-screen-sm px-4 py-3 flex items-center justify-between">
+        <div className="w-full px-4 py-3 flex items-center justify-between">
           <div className="font-semibold tracking-tight">Treasure Hunt</div>
           <button
             onClick={restart}
@@ -136,7 +135,7 @@ export default function TreasureHuntApp() {
       </div>
 
       {/* Main content */}
-      <main className="mx-auto w-full max-w-screen-sm flex-1 px-4 pb-28 pt-6">
+      <main className="w-full flex-1 px-4 pb-28 pt-6">
         <AnimatePresence mode="wait">
           {!started ? (
             // Home Page
@@ -146,7 +145,7 @@ export default function TreasureHuntApp() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="text-center"
+              className="text-center whitespace-pre-line"
             >
               <h1 className="text-2xl font-bold leading-tight">
                 Ready for a Treasure Hunt?
@@ -189,7 +188,7 @@ export default function TreasureHuntApp() {
                 </div>
               )}
 
-              <h2 className="mt-4 text-xl font-semibold leading-snug" style={{ whiteSpace: "pre-line" }}>
+              <h2 className="mt-4 text-xl font-semibold leading-snug whitespace-pre-line">
                 {CLUES[index].text}
               </h2>
 
@@ -240,7 +239,7 @@ export default function TreasureHuntApp() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="text-center"
+              className="text-center whitespace-pre-line"
             >
               <h2 className="text-2xl font-bold">You found the treasure! 🎉</h2>
               <p className="mt-2 text-slate-600">
@@ -262,7 +261,7 @@ export default function TreasureHuntApp() {
       {/* Footer button */}
       {started && index <= CLUES.length && (
         <div className="fixed inset-x-0 bottom-0 z-10 bg-white/90 backdrop-blur border-t border-slate-200">
-          <div className="mx-auto max-w-screen-sm px-4 py-3">
+          <div className="w-full px-4 py-3">
             {index <= CLUES.length - 1 ? (
               <motion.button
                 whileTap={{ scale: 0.98 }}
