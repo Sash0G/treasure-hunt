@@ -189,7 +189,7 @@ export default function TreasureHuntApp() {
                 </div>
               )}
 
-              <h2 className="mt-4 text-xl font-semibold leading-snug">
+              <h2 className="mt-4 text-xl font-semibold leading-snug" style={{ whiteSpace: "pre-line" }}>
                 {CLUES[index].text}
               </h2>
 
